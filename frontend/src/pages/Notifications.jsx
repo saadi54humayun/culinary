@@ -1,0 +1,17 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import ProfileAvatar from "../components/ProfileAvatar";
+
+function description(notification) {
+  const name = notification.actor?.displayName || notification.actor?.username || "A cook";
+  if (notification.type === "follow") return `${name} started following you.`;
+  if (notification.type === "like") return `${name} liked your recipe.`;
+  return `${name} commented on your recipe.`;
+}
+export default function Notifications() {
+  const [items, setItems] = useState([]); const [cursor, setCursor] = useState(null); const [nextCursor, setNextCursor] = useState(null); const [loading, setLoading] = useState(true); const [error, setError] = useState(""); const [moreError, setMoreError] = useState("");
+  useEffect(() => { const controller = new AbortController(); async function load() { setLoading(!cursor); setMoreError(""); try { const response = await fetch(`/api/notifications${cursor ? `?cursor=${encodeURIComponent(cursor)}` : ""}`, { credentials: "include", signal: controller.signal }); const data = await response.json(); if (!response.ok) throw new Error(data.message || "Unable to load notifications."); if (!controller.signal.aborted) { setItems((old) => cursor ? [...old, ...data.notifications] : data.notifications); setNextCursor(data.nextCursor); } } catch (e) { if (!controller.signal.aborted) cursor ? setMoreError(e.message) : setError(e.message); } finally { if (!controller.signal.aborted) setLoading(false); } } load(); return () => controller.abort(); }, [cursor]);
+  async function read(id) { const response = await fetch(`/api/notifications/${id}/read`, { method: "PATCH", credentials: "include" }); if (response.ok) setItems((old) => old.map((item) => item._id === id ? { ...item, readAt: new Date().toISOString() } : item)); }
+  async function readAll() { const response = await fetch("/api/notifications/read-all", { method: "PATCH", credentials: "include" }); if (response.ok) setItems((old) => old.map((item) => ({ ...item, readAt: new Date().toISOString() }))); }
+  return <main className="main-content notifications-page"><h1>Notifications</h1><button type="button" onClick={readAll} disabled={!items.some((item) => !item.readAt)}>Mark all as read</button>{loading && <p role="status">Loading notifications…</p>}{error && <p role="alert">{error}</p>}{!loading && !error && !items.length && <p>No notifications yet.</p>}<div className="notification-list">{items.map((item) => { const target = item.type === "follow" ? (item.actor?.username ? `/users/${encodeURIComponent(item.actor.username)}` : null) : (item.recipe ? `/recipes/${item.recipe}` : null); const text = description(item); return <article className={item.readAt ? "notification" : "notification unread"} key={item._id}><ProfileAvatar className="notification-avatar" imageUrl={item.actor?.profilePhotoUrl} name={item.actor?.displayName || item.actor?.username} decorative /><div>{target ? <Link to={target} onClick={() => read(item._id)}>{text}</Link> : <span>{text}</span>}<time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleString()}</time></div>{!item.readAt && <button type="button" onClick={() => read(item._id)}>Mark read</button>}</article>; })}</div>{moreError && <p role="alert">{moreError}</p>}{nextCursor && <button type="button" onClick={() => setCursor(nextCursor)} disabled={loading}>{loading ? "Loading…" : "Load more"}</button>}</main>;
+}

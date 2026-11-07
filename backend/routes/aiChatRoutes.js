@@ -1,0 +1,1 @@
+const router=require("express").Router();const requireAuth=require("../middlewares/requireAuth");const {chat}=require("../controllers/aiChatController");router.post("/",requireAuth,chat);module.exports=router;
