@@ -163,7 +163,7 @@ export default function Pantry() {
           </form>
           {error && <p className="pantry-error" role="alert">{error}</p>}
           {notice && <p role="status">{notice}</p>}
-          {loading ? <p>Loading your pantry…</p> : items.length === 0 ? <p>Your pantry is empty. Add ingredients to discover what you can cook.</p> : (
+          {loading ? <p>Loading your pantry…</p> : items.length === 0 ? <div className="pantry-empty-inventory"><span aria-hidden="true">🥕</span><strong>Start with what you have</strong><p>Add a few ingredients from your kitchen and we'll show recipes that match.</p></div> : (
             Object.entries(grouped).map(([name, groupItems]) => (
               <div className="pantry-group" key={name}>
                 <h3>{name}</h3>
@@ -202,7 +202,7 @@ export default function Pantry() {
             {readyCount} ready to cook · {matches.length} recipes shown
             {matchInfo?.limited ? " (newest 200 eligible recipes scanned)" : ""}
           </p>}
-          {!matching && !matchError && matches.length === 0 && <p>No published recipes match your filters.</p>}
+          {!matching && !matchError && matches.length === 0 && <div className="pantry-empty-matches"><h3>No matching recipes yet</h3><p>Try a broader search or add a few more pantry ingredients.</p></div>}
           <div className="pantry-recipe-grid">
             {matches.map((match) => (
               <article className="pantry-recipe-card" key={match.recipe._id}>

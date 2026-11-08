@@ -22,6 +22,7 @@
   --accent: #b65535;
   --danger: #a73535;
 
+  --focus-ring: 0 0 0 3px rgb(40 86 64 / 16%);
   --radius: 18px;
   --shadow: 0 8px 28px rgb(64 48 18 / 5%);
 }
@@ -187,7 +188,10 @@ select:focus {
 
 button:focus-visible,
 a:focus-visible,
-summary:focus-visible {
+summary:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
   outline: 3px solid var(--primary);
   outline-offset: 4px;
 }

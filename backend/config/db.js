@@ -1,15 +1,31 @@
 const mongoose = require("mongoose");
 
+// A Vercel function instance can handle more than one request. Reuse the
+// connection in that instance and coalesce concurrent connection attempts.
+let connecting = null;
+
 async function connectDB() {
   if (!process.env.MONGODB_URI) {
-    throw new Error("MONGODB_URI is missing from .env");
+    throw new Error("MONGODB_URI is missing from the environment");
   }
 
-  await mongoose.connect(process.env.MONGODB_URI, {
-    serverSelectionTimeoutMS: 10000
-  });
+  if (mongoose.connection.readyState === 1) {
+    return mongoose.connection;
+  }
 
-  console.log("MongoDB connected");
+  if (!connecting) {
+    connecting = mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000
+    }).then(() => {
+      console.log("MongoDB connected");
+      return mongoose.connection;
+    }).finally(() => {
+      // A failed connection can be retried; a later disconnect can reconnect.
+      connecting = null;
+    });
+  }
+
+  return connecting;
 }
 
 module.exports = connectDB;

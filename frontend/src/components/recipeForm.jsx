@@ -182,8 +182,8 @@ export default function RecipeForm({ onCancel, onCreated, onUpdated, initialReci
             return;
         }
 
-        if (file.size > 5 * 1024 * 1024) {
-            setError("Your image must be 5 MB or smaller.");
+        if (file.size > 4 * 1024 * 1024) {
+            setError("Your image must be 4 MB or smaller.");
             event.target.value = "";
             return;
         }
@@ -206,7 +206,7 @@ export default function RecipeForm({ onCancel, onCreated, onUpdated, initialReci
                 disabled={saving}
             />
 
-            <p>Optional. JPEG, PNG, or WebP, up to 5 MB.</p>
+            <p>Optional. JPEG, PNG, or WebP, up to 4 MB.</p>
 
             {(previewUrl || imageUrl) && (
                 <img

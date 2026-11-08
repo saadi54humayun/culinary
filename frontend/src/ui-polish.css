@@ -1,0 +1,181 @@
+/* Culinary launch polish — shared layout and new presentation components.
+   Uses existing CSS design tokens so the original cream/green identity stays. */
+
+/* Consistent readable measure and responsive page spacing. */
+.main-content { padding-block: clamp(24px, 4vw, 46px) 86px; }
+.welcome { gap: 22px; }
+.welcome h1 { line-height: 1.05; }
+.welcome .primary-button { align-self: center; }
+
+/* Discover: wider two-column card gallery on desktop, single-column on phones. */
+.social-feed-layout {
+  width: min(1120px, calc(100% - 64px));
+}
+.social-feed-page,
+.social-feed-layout .social-feed-page { width: 100%; padding-top: 16px; }
+.social-feed-shell { width: 100%; }
+.culinary-feed-intro { margin: 0 0 26px; }
+.culinary-feed-intro h1 { margin: 0 0 10px; font-size: clamp(2.15rem, 4.6vw, 3.6rem); }
+.culinary-feed-intro p:not(.eyebrow) { margin: 0; max-width: 720px; }
+.social-feed-controls { margin-bottom: 18px; }
+.social-feed { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 22px; }
+.social-feed > [role="status"],
+.social-feed > .social-feed-message,
+.social-feed > .following-empty-state,
+.social-feed > .social-feed-empty { grid-column: 1/-1; }
+.feed-post { min-width: 0; overflow: hidden; border-radius: 18px; box-shadow: var(--shadow); }
+.feed-post-image { aspect-ratio: 16 / 11; object-fit: cover; }
+.feed-post-content { padding: 12px 20px 20px; }
+.feed-post-content h2 { font-size: clamp(1.35rem, 2vw, 1.7rem); }
+.feed-post-description { -webkit-line-clamp: 2; line-clamp: 2; }
+.feed-post-metadata { display: flex; flex-wrap: wrap; gap: 7px 10px; align-items: center; }
+.feed-post-metadata span:not(:first-child)::before { content: '·'; padding-right: 9px; }
+.feed-recipe-category { display: inline-block; padding: 3px 9px; background: var(--primary-soft); color: var(--primary); border-radius: 100px; text-transform: capitalize; font-size: .77rem; font-weight: 700; }
+.feed-composer { margin-bottom: 18px; }
+.feed-pagination { margin-top: 18px; }
+
+/* Shared Saved / My Recipes cards. */
+.culinary-recipe-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.culinary-recipe-card { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+.culinary-recipe-photo { position: relative; display: block; margin: 12px 12px 0; border-radius: 13px; overflow: hidden; background: var(--surface-soft); }
+.culinary-recipe-photo .recipe-card-photo,
+.culinary-recipe-photo .recipe-photo-placeholder { height: auto; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.culinary-recipe-photo .recipe-card-photo { transition: transform .2s ease; }
+.culinary-recipe-photo:hover .recipe-card-photo { transform: scale(1.035); }
+.culinary-photo-fallback { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--muted); text-align: center; font-size: .82rem; padding: 18px; }
+.culinary-photo-fallback span:first-child { font-size: 2.2rem; }
+.culinary-photo-category { position: absolute; top: 10px; left: 10px; padding: 4px 10px; background: rgb(255 253 247 / 94%); color: var(--primary); border: 1px solid var(--border); border-radius: 999px; font-size: .75rem; font-weight: 700; text-transform: capitalize; }
+.culinary-recipe-card-content { padding: 17px 18px 19px; display: flex; flex-direction: column; flex: 1; gap: 11px; }
+.culinary-recipe-card-content h3 { margin: 0; font-size: clamp(1.2rem, 1.8vw, 1.55rem); }
+.culinary-recipe-card-description { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; margin: 0; min-height: 2.7em; font-size: .9rem; }
+.culinary-recipe-facts { display: flex; flex-wrap: wrap; gap: 7px; }
+.culinary-recipe-facts span { display: inline-flex; align-items: center; padding: 5px 9px; color: var(--primary); background: var(--primary-soft); border-radius: 8px; font-size: .74rem; font-weight: 700; }
+.culinary-recipe-card-footer { display: flex; align-items: center; gap: 8px; justify-content: space-between; flex-wrap: wrap; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border); }
+.culinary-recipe-card-footer .recipe-author { margin: 0; font-size: .82rem; }
+.culinary-recipe-card-footer .recipe-card-actions { display: flex; align-items: center; gap: 3px; }
+.culinary-recipe-owner-actions { display: flex; align-items: center; gap: 8px; }
+.culinary-recipe-owner-actions button { min-height: 37px; padding: 8px 12px; font-size: .8rem; }
+.culinary-recipe-owner-actions .danger-action { color: var(--danger); }
+.culinary-empty-recipe-state { max-width: 620px; margin: 12px 0; }
+.culinary-empty-recipe-state .primary-button { margin-top: 12px; }
+.culinary-loading-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.culinary-skeleton-card { min-height: 340px; border: 1px solid var(--border); border-radius: var(--radius); background: linear-gradient(110deg, var(--surface) 8%, var(--surface-soft) 18%, var(--surface) 33%); background-size: 220% 100%; animation: culinary-pulse 1.5s linear infinite; }
+@keyframes culinary-pulse { to { background-position-x: -220%; } }
+
+/* Find People: real landing state rather than empty-query backend validation error. */
+.people-page { max-width: 870px; padding-top: clamp(28px, 5vw, 56px); }
+.people-intro h1 { margin: 0 0 12px; }
+.people-intro p:not(.eyebrow) { max-width: 650px; margin: 0 0 24px; }
+.people-search-form { display: grid; gap: 10px; padding: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+.people-search-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; }
+.people-search-controls input { min-height: 48px; }
+.people-feedback-error { padding: 12px 15px; background: #fdf0eb; color: var(--danger); border: 1px solid #f4c9bd; border-radius: 10px; }
+.people-start-state { padding: 36px 24px; margin-top: 24px; border: 1px dashed var(--border); background: var(--surface); border-radius: var(--radius); text-align: center; }
+.people-start-state p { max-width: 510px; margin: 0 auto 18px; }
+.people-start-state h2 { font-size: 1.5rem; }
+.people-start-icon { display: inline-grid; place-items: center; color: var(--accent); font-size: 2.6rem; }
+.people-results-title { margin: 30px 0 8px; font-size: 1.5rem; }
+.person-details { min-width: 0; overflow-wrap: anywhere; }
+.person-details a { font-weight: 700; }
+.person-row { box-shadow: 0 2px 8px rgb(50 40 20 / 3%); }
+
+/* Planner: manual planning first, AI as an optional disclosure. */
+.meal-planner-ai { padding: 0; margin-bottom: 32px; }
+.meal-planner-ai-toggle { display: flex; justify-content: space-between; align-items: center; gap: 18px; padding: 18px 22px; cursor: pointer; list-style: none; }
+.meal-planner-ai-toggle::-webkit-details-marker { display: none; }
+.meal-planner-ai-toggle strong { display: block; font-size: 1.08rem; color: var(--primary); }
+.meal-planner-ai-toggle small { display: block; margin-top: 4px; color: var(--muted); font-size: .84rem; }
+.meal-planner-ai-chevron { display: inline-block; font-size: 1.5rem; color: var(--primary); transition: transform .2s ease; }
+.meal-planner-ai[open] .meal-planner-ai-chevron { transform: rotate(180deg); }
+.meal-planner-ai-inner { padding: 0 22px 22px; border-top: 1px solid var(--border); }
+.meal-planner-ai-heading { padding-top: 18px; }
+.meal-planner-mobile-day-selector { display: none; }
+.meal-planner-day { transition: box-shadow .15s ease; }
+.meal-planner-mini-nutrition { font-size: .77rem; }
+.meal-planner-nutrition { margin-top: 30px; }
+.meal-nutrition-unplanned { font-style: italic; color: var(--muted); background: var(--surface-soft); }
+.meal-planner-nutrition-table tbody tr:hover { background: var(--surface-soft); }
+
+/* Pantry improvements. */
+.pantry-panel { box-shadow: var(--shadow); }
+.pantry-item-form { border: 1px solid #efe3c9; }
+.pantry-recipe-card { box-shadow: 0 3px 12px rgb(60 43 21 / 4%); }
+.pantry-recipe-card > img { height: 190px; }
+.pantry-empty-inventory,
+.pantry-empty-matches { padding: 24px 15px; margin-top: 18px; border: 1px dashed var(--border); border-radius: 14px; text-align: center; }
+.pantry-empty-inventory span { display: block; font-size: 2rem; }
+.pantry-empty-inventory strong { display: block; margin-top: 10px; }
+.pantry-empty-inventory p, .pantry-empty-matches p { margin: 6px 0 0; font-size: .9rem; }
+
+@media (max-width: 900px) {
+  .social-feed { grid-template-columns: 1fr; }
+  .social-feed-layout { width: min(660px, calc(100% - 36px)); }
+  .culinary-recipe-grid, .culinary-loading-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 680px) {
+  .main-content { width: calc(100% - 32px); padding-bottom: calc(94px + env(safe-area-inset-bottom, 0px)); }
+  .welcome { align-items: flex-start; flex-direction: column; gap: 18px; padding: 10px 0 30px; }
+  .welcome h1 { font-size: clamp(2.2rem, 9vw, 3.3rem); }
+  .welcome > a, .welcome > button { align-self: flex-start; }
+  .social-feed-layout { width: calc(100% - 28px); }
+  .social-feed-layout .social-feed-page { padding-top: 10px; }
+  .culinary-feed-intro h1 { font-size: clamp(2rem, 8vw, 2.9rem); }
+  .social-feed { gap: 16px; }
+  .feed-post-image { aspect-ratio: 4 / 3; }
+  .culinary-recipe-grid, .culinary-loading-grid { grid-template-columns: 1fr; gap: 16px; }
+  .culinary-recipe-photo .recipe-card-photo, .culinary-recipe-photo .recipe-photo-placeholder { aspect-ratio: 16 / 11; }
+  .people-search-controls { grid-template-columns: 1fr; }
+  .person-row { grid-template-columns: auto minmax(0, 1fr); }
+  .person-row > button { grid-column: 2; justify-self: start; }
+  .meal-planner-ai-toggle { padding: 15px 16px; }
+  .meal-planner-ai-inner { padding: 0 16px 16px; }
+  .meal-planner-week-buttons { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .meal-planner-week-buttons button { padding: 8px 3px; font-size: .78rem; }
+  .meal-planner-mobile-day-selector { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; margin: 12px 0; }
+  .meal-planner-mobile-day-selector button { display: flex; flex-direction: column; align-items: center; gap: 3px; min-height: 58px; padding: 9px 1px; font-size: .76rem; border-radius: 11px; }
+  .meal-planner-mobile-day-selector button small { font-size: .72rem; font-weight: 400; }
+  .meal-planner-mobile-day-selector button.active { color: #fff; background: var(--primary); border-color: var(--primary); }
+  .meal-planner-scroll { overflow: visible; padding: 0; }
+  .meal-planner-days { display: block; min-width: 0; }
+  .meal-planner-day { display: none; padding: 18px; box-shadow: var(--shadow); }
+  .meal-planner-day.mobile-day-active { display: block; }
+  .meal-planner-day-heading { margin-bottom: 12px; }
+  .meal-planner-slot { padding-top: 14px; }
+  .meal-planner-serving-input { gap: 12px; justify-content: space-between; }
+  .meal-planner-slot-actions { flex-direction: row; gap: 16px; }
+  .meal-planner-nutrition-scroll { -webkit-overflow-scrolling: touch; }
+  .meal-planner-nutrition-table { min-width: 570px; }
+  .meal-planner-grocery-heading { align-items: flex-start; }
+  .meal-planner-export-controls { width: 100%; }
+  .meal-planner-grocery-items { grid-template-columns: 1fr; }
+  .pantry-recipe-grid { grid-template-columns: 1fr; }
+  .pantry-recipe-card > img { height: 195px; }
+}
+@media (max-width: 365px) {
+  .meal-planner-mobile-day-selector { gap: 2px; }
+  .meal-planner-mobile-day-selector button { font-size: .68rem; }
+  .culinary-recipe-card-content { padding: 15px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .culinary-skeleton-card { animation: none; }
+  .culinary-recipe-photo .recipe-card-photo { transition: none; }
+  .meal-planner-ai-chevron { transition: none; }
+}
+
+/* Small, accessible nutrition visual: bars compare only the scheduled days. */
+.meal-planner-calorie-chart { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 12px; padding: 18px; background: var(--surface-soft); border: 1px solid var(--border); border-radius: 14px; }
+.meal-planner-calorie-day { display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 0; font-size: .8rem; color: var(--primary); font-weight: 700; }
+.meal-planner-calorie-track { height: 130px; width: min(40px, 100%); display: flex; align-items: flex-end; border-radius: 8px 8px 4px 4px; background: rgb(40 86 64 / 8%); overflow: hidden; }
+.meal-planner-calorie-fill { width: 100%; background: #608d70; border-radius: 7px 7px 0 0; }
+.meal-planner-calorie-day small { color: var(--muted); font-size: .7rem; font-weight: 500; white-space: nowrap; }
+.culinary-feed-loading { grid-column: 1/-1; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.culinary-feed-empty { text-align: center; padding: 38px 24px; }
+.culinary-feed-empty h2 { margin: 0; font-size: 1.55rem; }
+.culinary-feed-empty p { margin: 7px 0 18px; }
+@media (max-width: 900px) { .culinary-feed-loading { grid-template-columns: 1fr; } }
+@media (max-width: 680px) {
+  .meal-planner-calorie-chart { gap: 4px; padding: 12px 7px; }
+  .meal-planner-calorie-track { height: 92px; }
+  .meal-planner-calorie-day { font-size: .7rem; }
+  .meal-planner-calorie-day small { font-size: .63rem; }
+}

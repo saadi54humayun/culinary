@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import RecipeForm from "../components/recipeForm";
-import RecipeLikeButton from "../components/RecipeLikeButton";
-import RecipeSaveButton from "../components/RecipeSaveButton";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import RecipePreviewCard from "../components/RecipePreviewCard";
+import { useLocation, useNavigate } from "react-router-dom";
 
 
 export default function Dashboard() {
@@ -143,7 +142,9 @@ export default function Dashboard() {
                         <h1>Something delicious starts here.</h1>
                         <p>Share your recipes and keep your favourites close.</p>
                     </div>
-
+                    <button className="primary-button" type="button" onClick={() => { setEditingRecipe(null); setShowRecipeForm(true); }}>
+                        + Create recipe
+                    </button>
                 </section>
 
                 {showRecipeForm && (
@@ -173,86 +174,26 @@ export default function Dashboard() {
                     </div>
                     {deleteError && <p role="alert">{deleteError}</p>}
 
-                    {loading && <p>Loading your recipes…</p>}
+                    {loading && <div role="status" className="culinary-loading-grid" aria-label="Loading recipes">{[0, 1, 2].map((item) => <div className="culinary-skeleton-card" key={item} />)}</div>}
 
                     {error && <p role="alert">{error}</p>}
 
                     {!loading && !error && (
                         visibleRecipes.length === 0 ? (
-                            <p>{recipeView === "drafts" ? "You have no private drafts yet." : "You haven’t published any recipes yet."}</p>
+                            <div className="empty-state culinary-empty-recipe-state">
+                                <h3>{recipeView === "drafts" ? "No drafts yet" : "Your cookbook starts here"}</h3>
+                                <p>{recipeView === "drafts" ? "Create a recipe and save it as a draft to finish later." : "Share your first recipe with the Culinary community."}</p>
+                                <button type="button" className="primary-button" onClick={() => { setEditingRecipe(null); setShowRecipeForm(true); }}>
+                                    + Create your first recipe
+                                </button>
+                            </div>
                         ) : (
-                            <div className="recipe-list">
+                            <div className="recipe-list culinary-recipe-grid">
                                 {visibleRecipes.map((recipe) => (
-
-
-                                    <article className="recipe-card" key={recipe._id}>
-
-                                        <Link
-                                            className="recipe-photo-link"
-                                            to={`/recipes/${recipe._id}`}
-                                            aria-label={`View ${recipe.title}`}
-                                        >
-                                            {recipe.imageUrl ? (
-                                                <img
-                                                    className="recipe-card-photo"
-                                                    src={recipe.imageUrl}
-                                                    alt={recipe.title}
-                                                    loading="lazy"
-                                                />
-                                            ) : (
-                                                <div className="recipe-photo-placeholder">
-                                                    <span aria-hidden="true">🍲</span>
-                                                    <span>No photo yet</span>
-                                                </div>
-                                            )}
-                                        </Link>
-                                        <h3>
-                                            <Link to={`/recipes/${recipe._id}`}>
-                                                {recipe.title}
-                                            </Link>
-                                        </h3>
-                                        <div className="recipe-card-meta-row">
-                                            <p className="recipe-author">By you</p>
-                                            <div className="recipe-card-actions">
-                                                <RecipeLikeButton
-                                                    recipe={recipe}
-                                                    onLikeUpdated={handleLikeUpdated}
-                                                />
-                                                <RecipeSaveButton
-                                                    recipe={recipe}
-                                                    onSaveUpdated={handleSaveUpdated}
-                                                />
-                                            </div>
-                                        </div>
-                                        <p>{recipe.description}</p>
-
-                                        <p className="recipe-category-badge">{recipe.category || "other"}</p>
-
-                                        <p>
-                                            Prep: {recipe.prepTimeMinutes} minutes ·
-                                            Cook: {recipe.cookTimeMinutes} minutes
-                                        </p>
-
-                                        <p>Servings: {recipe.servings}</p>
-
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                setEditingRecipe(recipe);
-                                                setShowRecipeForm(true);
-                                            }}
-                                        >
-                                            Edit recipe
-                                        </button>
-
-                                        <button
-                                            type="button"
-                                            onClick={() => handleDeleteRecipe(recipe._id)}
-                                            disabled={deletingId !== null}
-                                        >
-                                            {deletingId === recipe._id ? "Deleting…" : "Delete recipe"}
-                                        </button>
-                                    </article>
+                                    <RecipePreviewCard key={recipe._id} recipe={recipe} owner
+                                        onLikeUpdated={handleLikeUpdated} onSaveUpdated={handleSaveUpdated}
+                                        onEdit={(item) => { setEditingRecipe(item); setShowRecipeForm(true); }}
+                                        onDelete={handleDeleteRecipe} deleting={deletingId === recipe._id} />
                                 ))}
                             </div>
                         )

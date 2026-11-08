@@ -31,8 +31,8 @@ export default function EditProfileForm({ user, onSaved, onCancel }) {
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      setError("Your image must be 5 MB or smaller.");
+    if (file.size > 4 * 1024 * 1024) {
+      setError("Your image must be 4 MB or smaller.");
       event.target.value = "";
       return;
     }
@@ -136,7 +136,7 @@ export default function EditProfileForm({ user, onSaved, onCancel }) {
         disabled={saving}
         aria-describedby="profile-photo-help"
       />
-      <p id="profile-photo-help">Optional. JPEG, PNG, or WebP, up to 5 MB. Uploads when you save.</p>
+      <p id="profile-photo-help">Optional. JPEG, PNG, or WebP, up to 4 MB. Uploads when you save.</p>
 
       {(previewUrl || imageUrl) && (
         <img

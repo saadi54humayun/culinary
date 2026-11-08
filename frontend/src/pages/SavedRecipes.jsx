@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import RecipeLikeButton from "../components/RecipeLikeButton";
-import RecipeSaveButton from "../components/RecipeSaveButton";
+import RecipePreviewCard from "../components/RecipePreviewCard";
 
 export default function SavedRecipes() {
   const [recipes, setRecipes] = useState([]);
@@ -77,7 +76,7 @@ export default function SavedRecipes() {
         </Link>
       </section>
 
-      {loading && <p role="status">Loading saved recipes…</p>}
+      {loading && <div role="status" className="culinary-loading-grid" aria-label="Loading saved recipes">{[0, 1, 2].map((item) => <div className="culinary-skeleton-card" key={item} />)}</div>}
 
       {error && <p role="alert">{error}</p>}
 
@@ -92,70 +91,10 @@ export default function SavedRecipes() {
       )}
 
       {!loading && !error && recipes.length > 0 && (
-        <div className="recipe-list">
+        <div className="recipe-list culinary-recipe-grid">
           {recipes.map((recipe) => (
-            <article className="recipe-card" key={recipe._id}>
-              <Link
-                className="recipe-photo-link"
-                to={`/recipes/${recipe._id}`}
-                aria-label={`View ${recipe.title}`}
-              >
-                {recipe.imageUrl ? (
-                  <img
-                    className="recipe-card-photo"
-                    src={recipe.imageUrl}
-                    alt={recipe.title}
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className="recipe-photo-placeholder">
-                    <span aria-hidden="true">🍲</span>
-                    <span>No photo yet</span>
-                  </div>
-                )}
-              </Link>
-
-              <h3>
-                <Link to={`/recipes/${recipe._id}`}>
-                  {recipe.title}
-                </Link>
-              </h3>
-
-              <div className="recipe-card-meta-row">
-                <p className="recipe-author">
-                  By{" "}
-                  {recipe.author?.username ? (
-                    <Link
-                      to={`/users/${encodeURIComponent(recipe.author.username)}`}
-                    >
-                      {recipe.author.displayName || recipe.author.username}
-                    </Link>
-                  ) : (
-                    "Unknown author"
-                  )}
-                </p>
-                <div className="recipe-card-actions">
-                  <RecipeLikeButton
-                    recipe={recipe}
-                    onLikeUpdated={handleLikeUpdated}
-                  />
-                  <RecipeSaveButton
-                    recipe={recipe}
-                    onSaveUpdated={handleSaveUpdated}
-                  />
-                </div>
-              </div>
-
-              <p>{recipe.description}</p>
-
-              <p>
-                Prep: {recipe.prepTimeMinutes} minutes · Cook:{" "}
-                {recipe.cookTimeMinutes} minutes
-              </p>
-
-              <p>Servings: {recipe.servings}</p>
-
-            </article>
+            <RecipePreviewCard key={recipe._id} recipe={recipe}
+              onLikeUpdated={handleLikeUpdated} onSaveUpdated={handleSaveUpdated} />
           ))}
         </div>
       )}

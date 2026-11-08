@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import "./App.css";
+import "./ui-polish.css";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Profile from "./pages/Profile";
 import Signup from "./pages/Signup";
@@ -207,7 +208,7 @@ export default function App() {
   }
 
   return (
-    <>
+    <div className="app-shell">
       <Navbar
         user={user}
         onLogout={handleLogout}
@@ -250,6 +251,6 @@ export default function App() {
           }
         />
       </Routes>
-    </>
+    </div>
   );
 }

@@ -47,6 +47,7 @@ async function jsonOrThrow(response) {
 
 export default function MealPlanner({ user }) {
   const [weekStart, setWeekStart] = useState(() => mondayOf(new Date()));
+  const [mobileDay, setMobileDay] = useState(() => (new Date().getDay() + 6) % 7);
   const [entries, setEntries] = useState([]);
   const [items, setItems] = useState([]);
   const [pantryAdjustedItems, setPantryAdjustedItems] = useState([]);
@@ -369,6 +370,7 @@ export default function MealPlanner({ user }) {
     return groups;
   }, {});
 
+  const maxDailyCalories = Math.max(1, ...(nutrition?.days || []).map((day) => Number(day?.totals?.calories) || 0));
   const canEdit = !loading && !savingSlot && !aiSaving && !aiBusy;
   const groceryText = visibleItems.map((item) => `- ${item.name}: ${item.amount}`).join("\n");
 
@@ -392,7 +394,12 @@ export default function MealPlanner({ user }) {
         <Link className="primary-button" to="/saved-recipes">Browse saved recipes</Link>
       </section>
 
-      <section className="meal-planner-ai" aria-label="AI weekly meal suggestions">
+      <details className="meal-planner-ai" aria-label="AI weekly meal suggestions">
+        <summary className="meal-planner-ai-toggle">
+          <span><strong>✨ Culinary AI meal suggestions</strong><small>Optional · Generate a suggested week using published recipes</small></span>
+          <span aria-hidden="true" className="meal-planner-ai-chevron">⌄</span>
+        </summary>
+        <div className="meal-planner-ai-inner">
         <div className="meal-planner-ai-heading">
           <div><p className="eyebrow">SMART PLANNING</p><h2>Plan your week with Culinary AI</h2>
             <p>Get suggestions from real, published Culinary recipes. Nothing is saved until you approve the plan.</p></div>
@@ -457,7 +464,8 @@ export default function MealPlanner({ user }) {
             </ul>
           </div>
         )}
-      </section>
+        </div>
+      </details>
 
       <section aria-label="Weekly meal calendar">
         <div className="meal-planner-toolbar">
@@ -475,10 +483,18 @@ export default function MealPlanner({ user }) {
         {loading && <p role="status">Loading meal plan…</p>}
         {error && <p role="alert" className="meal-planner-error">{error}</p>}
 
+        <div className="meal-planner-mobile-day-selector" aria-label="Select a day">
+          {DAY_NAMES.map((name, day) => (
+            <button key={name} type="button" className={mobileDay === day ? "active" : ""}
+              aria-pressed={mobileDay === day} onClick={() => setMobileDay(day)}>
+              <span>{name.slice(0, 3)}</span><small>{dayDate(weekStart, day).getDate()}</small>
+            </button>
+          ))}
+        </div>
         <div className="meal-planner-scroll" tabIndex={0} aria-label="Scrollable weekly meal planner">
           <div className="meal-planner-days">
             {DAY_NAMES.map((name, day) => (
-              <article className="meal-planner-day" key={name}>
+              <article className={`meal-planner-day ${mobileDay === day ? "mobile-day-active" : ""}`} key={name}>
                 <div className="meal-planner-day-heading">
                   <h3>{name}</h3>
                   <span>{humanDate(dayDate(weekStart, day))}</span>
@@ -566,7 +582,21 @@ export default function MealPlanner({ user }) {
             <h3>Week total</h3>
             <MacroValues values={nutrition.totals} />
             <h3>Average per calendar day</h3>
+            <p className="nutrition-source">Across all 7 days, including days without scheduled meals; this is not a daily intake target.</p>
             <MacroValues values={nutrition.dailyAverage} />
+            <h3>Planned calories by day</h3>
+            <p className="nutrition-source">Bar heights show how planned days compare within this week—not a calorie target.</p>
+            <div className="meal-planner-calorie-chart" role="img" aria-label={nutrition.days.map((day) => `${DAY_NAMES[day.day]}: ${day.plannedMeals ? `${day.totals.calories} estimated calories` : "no meals planned"}`).join("; ")}>
+              {nutrition.days.map((day) => (
+                <div className="meal-planner-calorie-day" key={day.day}>
+                  <div className="meal-planner-calorie-track">
+                    {day.plannedMeals > 0 && <div className="meal-planner-calorie-fill" style={{ height: `${Math.max(4, (Number(day.totals.calories) || 0) / maxDailyCalories * 100)}%` }} />}
+                  </div>
+                  <span>{DAY_NAMES[day.day].slice(0, 3)}</span>
+                  <small>{day.plannedMeals > 0 ? `${Math.round(day.totals.calories)} kcal` : "—"}</small>
+                </div>
+              ))}
+            </div>
             <h3>Day-by-day breakdown</h3>
             <div className="meal-planner-nutrition-scroll">
               <table className="meal-planner-nutrition-table">
@@ -575,11 +605,13 @@ export default function MealPlanner({ user }) {
                   {nutrition.days.map((dayData) => (
                     <tr key={dayData.day}>
                       <th scope="row">{DAY_NAMES[dayData.day]}{dayData.incompleteMeals ? " *" : ""}</th>
-                      <td>{dayData.totals.calories} kcal</td>
-                      <td>{dayData.totals.protein}g</td>
-                      <td>{dayData.totals.carbs}g</td>
-                      <td>{dayData.totals.fat}g</td>
-                      <td>{dayData.totals.fiber}g</td>
+                      {dayData.plannedMeals > 0 ? <>
+                        <td>{dayData.totals.calories} kcal</td>
+                        <td>{dayData.totals.protein}g</td>
+                        <td>{dayData.totals.carbs}g</td>
+                        <td>{dayData.totals.fat}g</td>
+                        <td>{dayData.totals.fiber}g</td>
+                      </> : <td colSpan={5} className="meal-nutrition-unplanned">No meals planned</td>}
                     </tr>
                   ))}
                 </tbody>

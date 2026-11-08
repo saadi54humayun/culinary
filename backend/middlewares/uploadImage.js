@@ -4,7 +4,7 @@ const receiveImage = multer({
   storage: multer.memoryStorage(),
 
   limits: {
-    fileSize: 5 * 1024 * 1024,
+    fileSize: 4 * 1024 * 1024,
     files: 1,
     fields: 0
   },
@@ -32,7 +32,7 @@ function uploadImage(req, res, next) {
       return res.status(400).json({
         message:
           error.code === "LIMIT_FILE_SIZE"
-            ? "Your image must be 5 MB or smaller."
+            ? "Your image must be 4 MB or smaller."
             : error.message
       });
     }

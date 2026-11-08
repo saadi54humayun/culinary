@@ -1,3 +1,11 @@
 node_modules/
 .env
 .DS_Store
+
+# Local builds / Vercel project metadata
+.vercel/
+frontend/dist/
+backend/.env.*
+!backend/.env.example
+frontend/.env.*
+!frontend/.env.example

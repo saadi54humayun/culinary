@@ -31,7 +31,9 @@ function FeedPostLayout({ recipe, onLikeUpdated, onSaveUpdated, onCommentsCountC
             </h2>
             <p className="feed-post-description">{recipe.description}</p>
             <p className="feed-post-metadata">
-                {totalMinutes} min total · {recipe.servings} {recipe.servings === 1 ? "serving" : "servings"}
+                {recipe.category && <span className="feed-recipe-category">{recipe.category}</span>}
+                <span>{totalMinutes} min total</span>
+                <span>{recipe.servings} {recipe.servings === 1 ? "serving" : "servings"}</span>
             </p>
             <Link className="feed-post-view-link" to={`/recipes/${recipe._id}`}>
                 View recipe
@@ -361,7 +363,11 @@ export default function Feed({ user }) {
     return (
         <main className="main-content social-feed-layout">
             <section className="social-feed-page">
-                <h1 className="visually-hidden">Recipe feed</h1>
+                <div className="culinary-feed-intro">
+                    <p className="eyebrow">FRESH FROM THE COMMUNITY</p>
+                    <h1>Discover something delicious</h1>
+                    <p>Explore what other cooks are making, save your favorites, and find your next meal.</p>
+                </div>
 
                 <div className="social-feed-shell">
                 <div className="social-feed-controls">
@@ -443,7 +449,7 @@ export default function Feed({ user }) {
                 </section>
 
                 <section className="social-feed" aria-live="polite">
-                    {loading && <p role="status">Loading recipes…</p>}
+                    {loading && <div role="status" className="culinary-loading-grid culinary-feed-loading" aria-label="Loading recipes">{[0, 1, 2, 3].map((item) => <div className="culinary-skeleton-card" key={item} />)}</div>}
 
                     {error && (
                         <div className="social-feed-message">
@@ -470,11 +476,11 @@ export default function Feed({ user }) {
                                 )}
                             </div>
                         ) : (
-                            <p className="social-feed-empty">
-                                {searchTerm
-                                    ? "No recipes matched your search. Try another title."
-                                    : "No recipes yet. Be the first to share one!"}
-                            </p>
+                            <div className="social-feed-empty culinary-feed-empty">
+                                <h2>{searchTerm ? "No recipes matched" : "Your next great recipe starts here"}</h2>
+                                <p>{searchTerm ? "Try another title or reset your filters." : "Be the first to share a favorite dish with the community."}</p>
+                                {searchTerm ? <button type="button" onClick={resetFilters}>Reset filters</button> : <button className="primary-button" type="button" onClick={openRecipeComposer}>Share a recipe</button>}
+                            </div>
                         )
                     )}
 

@@ -76,3 +76,9 @@
 @media (prefers-reduced-motion: reduce) { .cook-step-track span { transition: none; } }
 
 .cook-offline-banner { padding: 12px 24px; color: var(--primary); background: var(--primary-soft); font-size: .87rem; text-align: center; font-weight: 600; }
+
+/* Respect iPhone status/home-indicator safe areas in standalone PWA mode. */
+@media (max-width: 580px) {
+  .cook-header { padding-top: calc(14px + env(safe-area-inset-top, 0px)); }
+  .cook-layout { padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
+}

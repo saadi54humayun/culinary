@@ -10,7 +10,7 @@ const SESSION_COOKIE_NAME = "culinary.sid";
 
 const cookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
+  secure: process.env.NODE_ENV === "production" || Boolean(process.env.VERCEL),
   sameSite: "lax",
   path: "/"
 };
