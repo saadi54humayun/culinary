@@ -1,0 +1,40 @@
+.pantry-intro { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 18px; margin-bottom: 28px; }
+.pantry-layout { display: grid; grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.7fr); align-items: start; gap: 22px; }
+.pantry-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
+.pantry-panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
+.pantry-panel-heading h2 { margin: 0; }
+.pantry-panel-heading span { color: var(--muted); }
+.pantry-panel-heading p { margin: 5px 0 0; }
+.pantry-item-form { display: grid; gap: 9px; background: var(--surface-soft); border-radius: 12px; padding: 16px; }
+.pantry-item-form h3 { font-size: 1.2rem; margin: 0 0 4px; }
+.pantry-item-form label, .pantry-filters label { display: block; font-weight: 600; font-size: .88rem; }
+.pantry-item-form input, .pantry-item-form select, .pantry-filters input, .pantry-filters select { margin-top: 6px; }
+.pantry-quantity-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 10px; }
+.pantry-form-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 5px; }
+.pantry-form-actions button:first-child { background: var(--primary); color: #fff; }
+.pantry-group { margin-top: 22px; }
+.pantry-group h3 { font-size: 1.12rem; margin: 0 0 10px; }
+.pantry-group ul { list-style: none; padding: 0; margin: 0; }
+.pantry-group li { border-bottom: 1px solid var(--border); padding: 10px 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.pantry-group li div:first-child { display: flex; flex-direction: column; gap: 4px; min-width: 0; overflow-wrap: anywhere; }
+.pantry-group small { color: var(--muted); }
+.pantry-item-actions { display: flex; flex-shrink: 0; gap: 6px; }
+.pantry-item-actions button { min-height: 34px; padding: 6px 8px; font-size: .79rem; }
+.pantry-error { color: var(--danger); }
+.pantry-filters { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto; gap: 10px; align-items: end; }
+.pantry-filters button { white-space: nowrap; }
+.pantry-help { font-size: .84rem; margin: 15px 0; }
+.pantry-match-summary { font-weight: 600; color: var(--primary); }
+.pantry-recipe-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 12px; }
+.pantry-recipe-card { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--surface); }
+.pantry-recipe-card > img { display: block; width: 100%; height: 150px; object-fit: cover; }
+.pantry-recipe-content { padding: 14px; }
+.pantry-recipe-content h3 { font-size: 1.13rem; margin: 8px 0; overflow-wrap: anywhere; }
+.pantry-recipe-content p { font-size: .82rem; margin: 7px 0; overflow-wrap: anywhere; }
+.pantry-match-status { display: inline-block; font-weight: 700; font-size: .73rem; padding: 5px 9px; border-radius: 8px; background: var(--surface-soft); }
+.pantry-match-ready { background: var(--primary-soft); color: var(--primary); }
+.pantry-match-review { background: #fff0d6; color: #775511; }
+.pantry-match-missing { background: #fbe9e5; color: #8c3b2c; }
+.pantry-recipe-link { display: inline-block; font-size: .86rem; font-weight: 600; margin-top: 6px; }
+@media (max-width: 1050px) { .pantry-layout { grid-template-columns: 1fr; } }
+@media (max-width: 620px) { .pantry-panel { padding: 14px; } .pantry-filters { grid-template-columns: 1fr; } .pantry-quantity-row { grid-template-columns: 1fr 1fr; } }

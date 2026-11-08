@@ -122,6 +122,27 @@ const recipeSchema = new mongoose.Schema(
       default: "published"
     },
 
+    // Nutrient estimate is keyed to the exact ingredients and recipe serving count.
+    // It is invalidated on edits and recalculated on demand via USDA.
+    nutrition: {
+      type: new mongoose.Schema({
+        source: { type: String, default: "USDA FoodData Central" },
+        fingerprint: String,
+        status: { type: String, enum: ["ready", "partial", "unavailable"] },
+        total: { type: mongoose.Schema.Types.Mixed },
+        perServing: { type: mongoose.Schema.Types.Mixed },
+        matchedCount: Number,
+        ingredientCount: Number,
+        missingIngredients: [{ _id: false, name: String, reason: String }],
+        matches: [{
+          _id: false, name: String, grams: Number, approximateWeight: Boolean,
+          fdcId: Number, matchedFood: String, nutrients: mongoose.Schema.Types.Mixed
+        }],
+        calculatedAt: Date
+      }, { _id: false }),
+      default: undefined
+    },
+
     publishedAt: {
       type: Date,
       default: null

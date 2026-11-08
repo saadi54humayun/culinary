@@ -1,0 +1,31 @@
+.nutrition-facts {
+  margin: 24px 0;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-soft);
+}
+.nutrition-facts h2 { margin: 0 0 8px; }
+.nutrition-facts p { margin: 6px 0 14px; }
+.nutrition-macros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px;
+  margin: 15px 0;
+}
+.nutrition-macro {
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+.nutrition-macro span { font-size: .78rem; color: var(--muted); }
+.nutrition-macro strong { font-size: 1.3rem; color: var(--primary); }
+.nutrition-macro small, .nutrition-source { color: var(--muted); }
+.nutrition-warning { color: var(--danger); }
+.nutrition-facts details { margin-top: 10px; }
+.nutrition-facts li { overflow-wrap: anywhere; }

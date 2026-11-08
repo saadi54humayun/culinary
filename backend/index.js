@@ -10,6 +10,8 @@ const savedRecipeRoutes = require("./routes/savedRecipeRoutes");
 const userRoutes = require("./routes/userRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const aiChatRoutes = require("./routes/aiChatRoutes");
+const mealPlanRoutes = require("./routes/mealPlanRoutes");
+const pantryRoutes = require("./routes/pantryRoutes");
 
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
@@ -17,6 +19,8 @@ const PORT = Number(process.env.PORT) || 5000;
 app.use(express.json());
 app.use(createSessionMiddleware());
 app.use("/api/saved-recipes", savedRecipeRoutes);
+app.use("/api/meal-plans", mealPlanRoutes);
+app.use("/api/pantry", pantryRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/ai-chat", aiChatRoutes);

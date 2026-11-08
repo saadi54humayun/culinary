@@ -6,10 +6,14 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      "/api": {
-        target: "http://127.0.0.1:5001",
-        changeOrigin: true
-      }
+      "/api": { target: "http://127.0.0.1:5001", changeOrigin: true }
+    }
+  },
+  preview: {
+    // For temporary HTTPS testing through a Cloudflare Quick Tunnel.
+    allowedHosts: [".trycloudflare.com"],
+    proxy: {
+      "/api": { target: "http://127.0.0.1:5001", changeOrigin: true }
     }
   }
 })

@@ -128,6 +128,13 @@ export default function Navbar({
                     <NavLink to="/saved-recipes">
                         Saved Recipes
                     </NavLink>
+                    <NavLink to="/meal-planner">
+                        Meal Planner
+                    </NavLink>
+                    <NavLink to="/pantry">
+                        My Pantry
+                    </NavLink>
+                    <NavLink to="/offline-recipes">Offline Recipes</NavLink>
 
                     <NavLink to="/profile">
                         My Profile

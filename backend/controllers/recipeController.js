@@ -2,6 +2,7 @@ const Recipe = require("../models/Recipe");
 const Comment = require("../models/Comment");
 const Follow = require("../models/Follow");
 const Like = require("../models/Like");
+const CookingProgress = require("../models/CookingProgress");
 const { enrichRecipesWithLikes } = require("../utils/recipeLikes");
 const { CATEGORIES, EQUIPMENT } = require("../models/Recipe");
 
@@ -126,6 +127,7 @@ async function deleteRecipe(req, res) {
 
     await Comment.deleteMany({ recipe: recipe._id });
     await Like.deleteMany({ recipe: recipe._id });
+    await CookingProgress.deleteMany({ recipe: recipe._id });
 
     return res.status(200).json({
       message: "Recipe deleted successfully.",
@@ -196,6 +198,12 @@ async function updateRecipe(req, res) {
 
       recipe.status = "published";
       recipe.publishedAt = recipe.publishedAt || new Date();
+    }
+
+    // Nutrition is no longer valid if the ingredients or serving yield changed.
+    if (Object.prototype.hasOwnProperty.call(updates, "ingredients") ||
+      Object.prototype.hasOwnProperty.call(updates, "servings")) {
+      recipe.nutrition = undefined;
     }
 
     await recipe.save();

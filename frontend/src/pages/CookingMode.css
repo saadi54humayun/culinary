@@ -1,0 +1,78 @@
+/* An immersive route, covering the existing site navigation without changing it. */
+.cook-mode {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--background);
+  color: var(--text);
+}
+.cook-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px max(24px, calc((100vw - 1360px) / 2));
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.cook-brand { font: 700 1.5rem Georgia, "Times New Roman", serif; color: var(--primary); }
+.cook-brand span { font: 500 .82rem Arial, sans-serif; letter-spacing: .02em; color: var(--muted); }
+.cook-header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.cook-header-actions button { padding: 9px 12px; font-size: .82rem; }
+.cook-layout { max-width: 1360px; margin: auto; padding: 36px 24px 80px; display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(280px, 1fr); gap: 26px; align-items: start; }
+.cook-main { min-width: 0; }
+.cook-topline { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; align-items: start; margin-bottom: 24px; }
+.cook-topline h1 { font-size: clamp(2rem, 4vw, 3.25rem); max-width: 740px; margin: 3px 0 0; overflow-wrap: anywhere; }
+.cook-eyebrow { font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--primary); margin: 0; }
+.cook-save-status { color: var(--muted); font-size: .82rem; max-width: 260px; }
+.cook-progress-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: .85rem; margin-bottom: 12px; }
+.cook-progress-meta span { color: var(--muted); }
+.cook-step-track { overflow: hidden; height: 8px; border-radius: 999px; background: #e2e2d4; }
+.cook-step-track span { display: block; height: 100%; background: var(--primary); transition: width 240ms ease; border-radius: inherit; }
+.cook-step-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; box-shadow: var(--shadow); padding: clamp(26px, 5vw, 64px); margin-top: 24px; min-height: 310px; display: flex; flex-direction: column; justify-content: center; gap: 22px; }
+.cook-instruction { margin: 0; font-size: clamp(1.45rem, 2.5vw, 2.35rem); line-height: 1.55; font-family: Georgia, "Times New Roman", serif; color: var(--text); white-space: pre-line; overflow-wrap: anywhere; }
+.cook-step-navigation { display: flex; gap: 10px; justify-content: space-between; margin-top: 24px; }
+.cook-step-navigation button { min-width: 165px; }
+.cook-step-dots { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 26px; }
+.cook-dot { min-height: 36px; min-width: 36px; padding: 6px; border-radius: 50%; font-size: .8rem; }
+.cook-dot.active { color: white; background: var(--primary); border-color: var(--primary); }
+.cook-sidebar { display: grid; gap: 18px; min-width: 0; }
+.cook-panel { padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; }
+.cook-panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.cook-panel-heading h2 { font-size: 1.35rem; margin: 0; }
+.cook-panel-heading small { color: var(--muted); }
+.cook-servings { display: flex; justify-content: space-between; gap: 12px; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+.cook-servings > div { display: flex; align-items: center; }
+.cook-servings button { min-width: 34px; min-height: 34px; padding: 5px; }
+.cook-servings input { width: 65px; min-width: 0; padding: 5px; margin: 0 4px; text-align: center; }
+.cook-ingredients { list-style: none; padding: 0; margin: 0; max-height: 350px; overflow-y: auto; }
+.cook-ingredients li { border-bottom: 1px solid var(--border); }
+.cook-ingredients li:last-child { border: 0; }
+.cook-ingredients label { display: flex; padding: 12px 0; gap: 10px; align-items: flex-start; cursor: pointer; font-size: .92rem; font-weight: 500; }
+.cook-ingredients input { width: 19px; height: 19px; flex: 0 0 19px; margin: 2px 0 0; accent-color: var(--primary); }
+.cook-ingredients small { display: block; font-size: .73rem; color: var(--muted); }
+.cook-ingredient-checked span { color: var(--muted); text-decoration: line-through; }
+.cook-clock { font-size: clamp(3rem, 5vw, 4.5rem); font-variant-numeric: tabular-nums; font-weight: 700; letter-spacing: -.04em; text-align: center; margin: 14px 0; color: var(--primary); }
+.cook-timer-context, .cook-timer-done { margin: 0; text-align: center; font-size: .84rem; }
+.cook-timer-done { color: var(--accent); font-weight: 700; }
+.cook-timer-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.cook-timer-inputs label { font-size: .8rem; color: var(--muted); }
+.cook-timer-inputs input { margin-top: 5px; padding: 8px; }
+.cook-timer-actions { display: flex; margin-top: 14px; gap: 8px; }
+.cook-timer-actions button { flex: 1; padding: 9px; }
+.cook-timer-tip { font-size: .75rem; line-height: 1.5; margin-bottom: 0; }
+.cook-restart { color: var(--danger); background: transparent; border-color: transparent; justify-self: start; padding: 8px 0; }
+.cook-finished { text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 64px 20px; display: grid; gap: 14px; justify-items: center; }
+.cook-finished h2, .cook-finished p { margin: 0; }
+.cook-celebrate { display: grid; place-items: center; width: 65px; height: 65px; border-radius: 50%; font-size: 2rem; color: white; background: var(--primary); }
+.cook-message { text-align: center; margin: 60px auto; max-width: 620px; }
+@media (max-width: 860px) { .cook-layout { grid-template-columns: 1fr; } .cook-sidebar { grid-template-columns: repeat(2, minmax(0,1fr)); } .cook-restart { grid-column: 1/-1; } }
+@media (max-width: 580px) { .cook-header { padding: 14px; flex-wrap: wrap; } .cook-brand span { display: none; } .cook-layout { padding: 20px 14px 70px; } .cook-sidebar { grid-template-columns: 1fr; } .cook-step-card { min-height: 235px; } .cook-step-navigation button { min-width: 0; flex: 1; padding-inline: 8px; } }
+@media (prefers-reduced-motion: reduce) { .cook-step-track span { transition: none; } }
+
+.cook-offline-banner { padding: 12px 24px; color: var(--primary); background: var(--primary-soft); font-size: .87rem; text-align: center; font-weight: 600; }

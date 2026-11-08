@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import RecipeComments from "../components/RecipeComments";
 import RecipeLikeButton from "../components/RecipeLikeButton";
+import NutritionFacts from "../components/NutritionFacts";
+import { downloadOfflineRecipe, getOfflineRecipe, removeOfflineRecipe } from "../offline/storage";
 
 export default function RecipeDetails({ user }) {
     const { id } = useParams();
@@ -13,6 +15,12 @@ export default function RecipeDetails({ user }) {
     const [checkingSaved, setCheckingSaved] = useState(true);
     const [saving, setSaving] = useState(false);
     const [savedError, setSavedError] = useState("");
+    const [nutrition, setNutrition] = useState(null);
+    const [nutritionLoading, setNutritionLoading] = useState(false);
+    const [nutritionError, setNutritionError] = useState("");
+    const [downloaded, setDownloaded] = useState(false);
+    const [offlineBusy, setOfflineBusy] = useState(false);
+    const [offlineMessage, setOfflineMessage] = useState("");
 
     useEffect(() => {
         const controller = new AbortController();
@@ -21,6 +29,8 @@ export default function RecipeDetails({ user }) {
             setLoading(true);
             setError("");
             setRecipe(null);
+            setNutrition(null);
+            setNutritionError("");
 
             try {
                 const response = await fetch(`/api/recipes/${id}`, {
@@ -38,6 +48,7 @@ export default function RecipeDetails({ user }) {
 
                 if (!controller.signal.aborted) {
                     setRecipe(data.recipe);
+                    setNutrition(data.recipe.nutrition ?? null);
                 }
             } catch (error) {
                 if (!controller.signal.aborted) {
@@ -95,6 +106,61 @@ export default function RecipeDetails({ user }) {
 
         return () => controller.abort();
     }, [id]);
+
+    useEffect(() => {
+        if (!recipe?._id || !user) return;
+        let active = true;
+        getOfflineRecipe(user.id || user._id, recipe._id).then((item) => {
+            if (active) setDownloaded(Boolean(item));
+        }).catch(() => { if (active) setDownloaded(false); });
+        return () => { active = false; };
+    }, [recipe?._id, user]);
+
+    async function toggleOfflineDownload() {
+        if (!recipe || !user || offlineBusy) return;
+        setOfflineBusy(true);
+        setOfflineMessage("");
+        try {
+            if (downloaded) {
+                await removeOfflineRecipe(user.id || user._id, recipe._id);
+                setDownloaded(false);
+                setOfflineMessage("Offline download removed.");
+            } else {
+                // The revision is needed to safely sync edits after the user reconnects.
+                const res = await fetch(`/api/recipes/${recipe._id}/cook-progress`, { credentials: "include" });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) throw new Error(data.message || "Unable to prepare this recipe for offline use.");
+                const result = await downloadOfflineRecipe(user.id || user._id, recipe, data.recipeVersion, data.progress, data.updatedAt);
+                setDownloaded(true);
+                setOfflineMessage(result.imageCached ? "Recipe and photo saved on this device." : "Recipe saved. Photo may need internet.");
+            }
+        } catch (error) { setOfflineMessage(error.message); }
+        finally { setOfflineBusy(false); }
+    }
+
+    // Calculate once on first visit; subsequent visits reuse the cached Recipe.nutrition.
+    useEffect(() => {
+        if (!recipe?._id || nutrition?.status) return;
+        const controller = new AbortController();
+        async function analyze() {
+            setNutritionLoading(true);
+            setNutritionError("");
+            try {
+                const response = await fetch(`/api/recipes/${recipe._id}/nutrition/analyze`, {
+                    method: "POST", credentials: "include", signal: controller.signal
+                });
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(data.message || "Unable to analyze nutrition.");
+                if (!controller.signal.aborted) setNutrition(data.nutrition);
+            } catch (error) {
+                if (!controller.signal.aborted) setNutritionError(error.message);
+            } finally {
+                if (!controller.signal.aborted) setNutritionLoading(false);
+            }
+        }
+        analyze();
+        return () => controller.abort();
+    }, [recipe?._id, nutrition?.status]);
 
     async function handleToggleSaved() {
         if (saving || checkingSaved) return;
@@ -201,6 +267,21 @@ export default function RecipeDetails({ user }) {
                     </p>
 
                     <p>Servings: {recipe.servings}</p>
+
+                    {recipe.steps?.length > 0 && (
+                        <Link className="primary-button" to={`/recipes/${recipe._id}/cook`}>
+                            Start cooking →
+                        </Link>
+                    )}
+
+                    {recipe.status !== "draft" && recipe.steps?.length > 0 && <div className="offline-download-actions" style={{ margin: "16px 0" }}>
+                        <button type="button" onClick={toggleOfflineDownload} disabled={offlineBusy}>
+                            {offlineBusy ? "Preparing download…" : downloaded ? "Remove offline download" : "↓ Save for offline cooking"}
+                        </button>
+                        {downloaded && <Link to="/offline-recipes" style={{ marginLeft: 12 }}>My offline recipes</Link>}
+                        {offlineMessage && <p role="status">{offlineMessage}</p>}
+                    </div>}
+                    <NutritionFacts nutrition={nutrition} loading={nutritionLoading} error={nutritionError} />
 
                     <h2>Ingredients</h2>
                     <ul>
